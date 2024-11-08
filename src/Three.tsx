@@ -13,8 +13,8 @@ import { TextureLoader } from "three";
 const Canvas = () => {
 
     var animationRequestId: any
-    const sitnum1 = 30;
-    const sitnum2 = 30;
+    const sitnum1 = 32;
+    const sitnum2 = 32;
     const sitInterp = 1;
     const sitOrder = 0;
     const backnum1 = 16;
@@ -56,6 +56,8 @@ const Canvas = () => {
     const SEPARATION = 100;
     let group = new THREE.Group();
 
+    let lineGroup = new THREE.Group();
+    group.add(lineGroup)
     let positions1;
     let colors1, scales1;
     let positions;
@@ -179,14 +181,6 @@ const Canvas = () => {
         for (let ix = 0; ix < AMOUNTX; ix++) {
             let position = new Float32Array(AMOUNTY * 3);
             for (let iy = 0; iy < AMOUNTY; iy++) {
-                positions[i] = ix * SEPARATION - (AMOUNTX * SEPARATION) / 2 + ix * 20; // x
-                positions[i + 1] = 0; // y
-                positions[i + 2] = iy * SEPARATION - (AMOUNTY * SEPARATION) / 2; // z
-
-                let x = ix * SEPARATION - (AMOUNTX * SEPARATION) / 2 + ix * 20; // x
-                let y = 0; // y
-                let z = iy * SEPARATION - (AMOUNTY * SEPARATION) / 2; // z
-
                 position[i] = ix
                 position[i + 1] = 0; // y
                 position[i + 2] = iy
@@ -214,26 +208,20 @@ const Canvas = () => {
                 "position",
                 new THREE.BufferAttribute(position, 3)
             );
-            // geometry.vertices = vertices;
-            // geometry.colors = colors;
-            let lineMesh = new THREE.Line(geometry, material);
+
+            let lineMesh: any = new THREE.Line(geometry, material);
             lineMesh.geometry.verticesNeedUpdate = true;
             lineMesh.geometry.colorsNeedUpdate = true;
-            lineMesh.userIndex = ix
-            group.add(lineMesh);
+            lineMesh.userdata = { index: ix }
+            // lineMesh.userIndex = 
+            lineGroup.add(lineMesh);
             i = 0
         }
 
         for (let ix = 0; ix < AMOUNTX; ix++) {
             let position = new Float32Array(AMOUNTY * 3);
             for (let iy = 0; iy < AMOUNTY; iy++) {
-                positions[i] = iy * SEPARATION - (AMOUNTY * SEPARATION) / 2; // z 
-                positions[i + 1] = 0; // y
-                positions[i + 2] = ix * SEPARATION - (AMOUNTX * SEPARATION) / 2 + ix * 20; // x
 
-                let x = ix * SEPARATION - (AMOUNTX * SEPARATION) / 2 + ix * 20; // x
-                let y = 0; // y
-                let z = iy * SEPARATION - (AMOUNTY * SEPARATION) / 2; // z
 
                 position[i] = iy; // z
                 position[i + 1] = 0; // y
@@ -262,47 +250,16 @@ const Canvas = () => {
                 "position",
                 new THREE.BufferAttribute(position, 3)
             );
-            // geometry.vertices = vertices;
-            // geometry.colors = colors;
-            let lineMesh = new THREE.Line(geometry, material);
+
+            let lineMesh: any = new THREE.Line(geometry, material);
             lineMesh.geometry.verticesNeedUpdate = true;
             lineMesh.geometry.colorsNeedUpdate = true;
             // return lineMesh;
-            lineMesh.userIndex = AMOUNTX + ix
-            group.add(lineMesh);
+            lineMesh.userdata = { index: AMOUNTX + ix }
+            // lineMesh.userIndex = 
+            lineGroup.add(lineMesh);
             i = 0
         }
-
-        console.log(positions)
-
-
-        sitGeometry = new THREE.BufferGeometry();
-        sitGeometry.setAttribute(
-            "position",
-            new THREE.BufferAttribute(positions, 3)
-        );
-        function getTexture() {
-            return new TextureLoader().load("");
-        }
-        // require("../../assets/images/circle.png")
-        // const spite = new THREE.TextureLoader().load("./circle.png");
-        material = new THREE.PointsMaterial({
-            vertexColors: true,
-            transparent: true,
-            //   color: 0xffffff,
-            // map: spite,
-            size: 1,
-        });
-        sitGeometry.setAttribute("scale", new THREE.BufferAttribute(scales, 1));
-        sitGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-        particles = new THREE.Line(sitGeometry, material);
-
-        particles.scale.x = 0.0062;
-        particles.scale.y = 0.0062;
-        particles.scale.z = 0.0062;
-        // group.add(particles);
-
-
 
     }
     // 初始化靠背
@@ -319,7 +276,7 @@ const Canvas = () => {
 
         particlesPoint.position.x = -10 + 48
         particlesPoint.position.z = -19 + 38.5
-        group.add(particlesPoint);
+        group.add(lineGroup);
 
     }
     //
@@ -344,27 +301,89 @@ const Canvas = () => {
 
     function sitRenew() {
 
-
-        let dataArr = []
         let resArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 7, 5, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 2, 9, 6, 26, 4, 13, 12, 7, 4, 1, 1, 0, 2, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 10, 9, 6, 12, 25, 36, 13, 16, 38, 32, 37, 14, 20, 29, 26, 17, 14, 23, 36, 27, 5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 32, 43, 21, 47, 37, 46, 74, 32, 38, 38, 44, 20, 33, 39, 63, 37, 30, 57, 36, 63, 35, 24, 18, 1, 0, 0, 0, 0, 0, 2, 1, 12, 21, 56, 10, 36, 34, 36, 69, 34, 48, 47, 71, 40, 56, 55, 56, 88, 93, 101, 86, 66, 11, 62, 37, 13, 3, 0, 0, 0, 0, 0, 1, 11, 22, 11, 6, 18, 25, 46, 56, 24, 72, 59, 34, 45, 78, 60, 38, 68, 92, 52, 81, 14, 2, 29, 59, 89, 54, 0, 0, 0, 0, 1, 9, 62, 28, 8, 2, 4, 41, 45, 27, 29, 77, 56, 61, 47, 55, 64, 50, 50, 59, 50, 7, 2, 0, 4, 35, 50, 47, 0, 0, 0, 0, 2, 51, 68, 44, 3, 1, 2, 7, 32, 40, 27, 54, 57, 38, 49, 59, 58, 50, 38, 36, 7, 1, 1, 0, 1, 6, 43, 58, 0, 0, 1, 1, 20, 84, 115, 10, 1, 1, 1, 3, 19, 55, 44, 44, 39, 45, 48, 31, 47, 61, 30, 15, 3, 1, 0, 0, 1, 1, 4, 32, 0, 0, 0, 4, 147, 71, 32, 3, 0, 1, 1, 3, 52, 38, 31, 38, 26, 27, 34, 45, 44, 58, 17, 3, 1, 0, 0, 0, 0, 0, 1, 18, 0, 1, 2, 48, 29, 2, 0, 0, 0, 1, 3, 1, 9, 22, 41, 39, 15, 27, 59, 34, 24, 25, 10, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 22, 21, 4, 2, 1, 1, 0, 1, 0, 2, 9, 4, 15, 10, 13, 19, 28, 19, 17, 21, 5, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 26, 13, 2, 0, 0, 1, 1, 0, 2, 1, 0, 6, 3, 20, 10, 9, 24, 32, 20, 9, 10, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 1, 5, 3, 31, 19, 116, 33, 44, 48, 63, 62, 45, 38, 15, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 3, 1, 2, 1, 7, 23, 17, 12, 19, 33, 55, 97, 98, 60, 54, 60, 53, 39, 17, 7, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 52, 64, 95, 94, 72, 48, 39, 52, 67, 47, 36, 48, 86, 54, 37, 41, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 13, 74, 80, 65, 85, 66, 75, 41, 14, 19, 26, 36, 36, 37, 57, 64, 75, 24, 3, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 24, 43, 40, 23, 32, 13, 2, 5, 5, 4, 5, 4, 3, 15, 26, 31, 20, 49, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 18, 61, 7, 3, 3, 1, 0, 1, 2, 2, 0, 5, 15, 32, 56, 13, 35, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 6, 20, 57, 14, 2, 1, 1, 0, 0, 2, 0, 1, 4, 17, 48, 21, 6, 5, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 13, 11, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 12, 14, 16, 8, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 5, 13, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 3, 5, 19, 6, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 2, 9, 8, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 38, 2, 1, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 30, 19, 21, 6, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 38, 16, 8, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 18, 31, 26, 10, 3, 0, 0, 1, 0, 0, 0, 0, 14, 54, 43, 14, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 17, 69, 33, 59, 17, 0, 0, 1, 0, 0, 0, 0, 18, 34, 18, 16, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 8, 7, 69, 37, 96, 48, 25, 0, 0, 0, 0, 0, 0, 1, 51, 39, 58, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 3, 15, 25, 69, 63, 0, 1, 0, 0, 0, 2, 2, 49, 23, 28, 3, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 6, 12, 46, 0, 0, 1, 0, 0, 2, 15, 30, 26, 9, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 4, 36, 0]
 
-        let k = 0,
-            l = 0;
+        console.log(lineGroup)
+        lineGroup.traverse(function (child: any) {
+            let userdata = child.userdata;
+            if (userdata) {
+                let lineIndex = userdata.index;
+                let i = 0,
+                    j = 0;
+                // for (let ix = 0; ix < AMOUNTX; ix++) {
+
+                //     for (let iy = 0; iy < AMOUNTY; iy++) {
 
 
-        
+                //         position[i] = iy; // z
+                //         position[i + 1] = resArr[AMOUNTX*32 + ix]; // y
+                //         position[i + 2] = ix; // x
 
 
+                //         scales[j] = 1;
+                //         colors[i] = 0 / 255;
+                //         colors[i + 1] = 0 / 255;
+                //         colors[i + 2] = 255 / 255;
+
+                //         i += 3;
+                //         j++;
+                //     }
+                //     i = 0
+                //     child.setAttribute(
+                //         "position",
+                //         new THREE.BufferAttribute(position, 3)
+                //     );
+                // }
+                if (lineIndex < 32) {
+                    let position = new Float32Array(AMOUNTY * 3);
+                    for (let iy = 0; iy < AMOUNTY; iy++) {
 
 
-        // particles.geometry.attributes.position.needsUpdate = true;
-        // particles.geometry.attributes.color.needsUpdate = true;
+                        position[i] = iy; // z
+                        position[i + 1] = resArr[AMOUNTX * 32 + lineIndex]; // y
+                        position[i + 2] = lineIndex; // x
 
-        // sitGeometry.setAttribute(
-        //   "position",
-        //   new THREE.BufferAttribute(positions, 3)
-        // );
-        // sitGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+                        scales[j] = 1;
+                        colors[i] = 0 / 255;
+                        colors[i + 1] = 0 / 255;
+                        colors[i + 2] = 255 / 255;
+
+                        i += 3;
+                        j++;
+                    }
+                    i = 0
+                    child.geometry.setAttribute(
+                        "position",
+                        new THREE.BufferAttribute(position, 3)
+                    );
+                } else {
+                    let position = new Float32Array(AMOUNTY * 3);
+                    for (let iy = 0; iy < AMOUNTY; iy++) {
+
+
+                        position[i] = lineIndex; // z
+                        position[i + 1] = resArr[lineIndex * 32 + AMOUNTX]; // y
+                        position[i + 2] = iy; // x
+
+
+                        scales[j] = 1;
+                        colors[i] = 0 / 255;
+                        colors[i + 1] = 0 / 255;
+                        colors[i + 2] = 255 / 255;
+
+                        i += 3;
+                        j++;
+                    }
+                    i = 0
+                    child.geometry.setAttribute(
+                        "position",
+                        new THREE.BufferAttribute(position, 3)
+                    );
+                }
+            }
+        })
+
     }
 
     function render() {
