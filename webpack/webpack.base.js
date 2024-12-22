@@ -31,7 +31,7 @@ module.exports = {
     // assetMoudleFilename : 'img/[hash][ext][query]'
   },
   resolve: {
-    extensions: ['.js', '.tsx', '.jsx'],
+    extensions: ['.js', '.tsx', '.ts','.jsx'],
     alias: {
       '@': SRC_PATH,
     },
@@ -39,7 +39,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx|tsx)$/,
+        test: /\.(js|ts|jsx|tsx)$/,
         use: [
           {
             loader: 'thread-loader',

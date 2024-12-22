@@ -12,6 +12,8 @@ import { TextureLoader } from "three";
 
 const Canvas = () => {
 
+
+
     var animationRequestId: any
     const sitnum1 = 32;
     const sitnum2 = 32;
@@ -493,10 +495,8 @@ const Canvas = () => {
     }, []);
     return (
         <div>
-            <div
-
-                id={`canvas`}
-            ></div>
+            <div id={`canvas`}></div>
+            
         </div>
     );
 };
